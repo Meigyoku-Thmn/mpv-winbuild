@@ -1,4 +1,4 @@
-From ce8cdd86b8cf08bf66145a5595a3c2defa01d406 Mon Sep 17 00:00:00 2001
+From d37718de4d46015e8452fb0ab26ae5323f4ee2fe Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -7,8 +7,8 @@ Subject: [PATCH] packages: compile lgpl libmpv
  cmake/packages_check.cmake |   6 +--
  packages/ffmpeg.cmake      | 102 +++----------------------------------
  packages/libarchive.cmake  |   3 +-
- packages/mpv.cmake         |  38 ++++----------
- 4 files changed, 20 insertions(+), 129 deletions(-)
+ packages/mpv.cmake         |  59 +++++++--------------
+ 4 files changed, 27 insertions(+), 143 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0154cf5 100644
@@ -176,36 +176,39 @@ index 39f0396..7902fab 100644
          -DENABLE_CPIO=OFF
          -DENABLE_CAT=OFF
 diff --git a/packages/mpv.cmake b/packages/mpv.cmake
-index a2954d5..7b8c4c8 100644
+index a2954d5..9006f84 100644
 --- a/packages/mpv.cmake
 +++ b/packages/mpv.cmake
-@@ -6,15 +6,11 @@ ExternalProject_Add(mpv
-         lcms2
-         libarchive
+@@ -3,28 +3,15 @@ ExternalProject_Add(mpv
+         angle-headers
+         ffmpeg
+         fribidi
+-        lcms2
+-        libarchive
          libass
 -        libdvdnav
 -        libdvdread
          libiconv
          libjpeg
          libpng
-         luajit
+-        luajit
 -        rubberband
          uchardet
 -        openal-soft
-         mujs
+-        mujs
          vulkan
          shaderc
-@@ -22,9 +18,7 @@ ExternalProject_Add(mpv
+         libplacebo
          spirv-cross
-         vapoursynth
-         libsdl2
+-        vapoursynth
+-        libsdl2
 -        subrandr
-         libsixel
+-        libsixel
 -        curl
      GIT_REPOSITORY https://github.com/mpv-player/mpv.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--filter=tree:0"
-@@ -35,30 +29,32 @@ ExternalProject_Add(mpv
+@@ -35,30 +22,32 @@ ExternalProject_Add(mpv
          --cross-file=${MESON_CROSS}
          --default-library=shared
          --prefer-static
@@ -218,34 +221,41 @@ index a2954d5..7b8c4c8 100644
 +        -Dcplayer=false
          -Dlibmpv=true
 -        -Dpdf-build=enabled
-+        -Dpdf-build=disabled
-         -Dlua=enabled
-         -Djavascript=enabled
-         -Dsdl2-gamepad=enabled
-         -Dlibarchive=enabled
+-        -Dlua=enabled
+-        -Djavascript=enabled
+-        -Dsdl2-gamepad=enabled
+-        -Dlibarchive=enabled
 -        -Dlibbluray=enabled
 -        -Ddvdnav=enabled
++        -Dpdf-build=disabled
++        -Dlua=disabled
++        -Djavascript=disabled
++        -Dsdl2-gamepad=disabled
++        -Dlibarchive=disabled
 +        -Dlibbluray=disabled
 +        -Ddvdnav=disabled
          -Duchardet=enabled
 -        -Drubberband=enabled
-+        -Drubberband=disabled
-         -Dlcms2=enabled
+-        -Dlcms2=enabled
 -        -Dopenal=enabled
++        -Drubberband=disabled
++        -Dlcms2=disabled
 +        -Dopenal=disabled
          -Dspirv-cross=enabled
          -Dvulkan=enabled
-         -Dvapoursynth=enabled
+-        -Dvapoursynth=enabled
 -        -Dsubrandr=enabled
+-        -Dsixel=enabled
++        -Dvapoursynth=disabled
 +        -Dsubrandr=disabled
-         -Dsixel=enabled
++        -Dsixel=disabled
          ${mpv_gl}
 -        -Dlibcurl=enabled
 +        -Dlibcurl=disabled
          -Dc_args='-Wno-error=int-conversion'
      BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
      INSTALL_COMMAND ""
-@@ -73,13 +69,6 @@ ExternalProject_Add_Step(mpv strip-binary
+@@ -73,13 +62,6 @@ ExternalProject_Add_Step(mpv strip-binary
  
  ExternalProject_Add_Step(mpv copy-binary
      DEPENDEES strip-binary
@@ -259,7 +269,7 @@ index a2954d5..7b8c4c8 100644
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
      COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
-@@ -99,14 +88,9 @@ mv $2 $2-git-\${GIT}")
+@@ -99,14 +81,9 @@ mv $2 $2-git-\${GIT}")
  ExternalProject_Add_Step(mpv copy-package-dir
      DEPENDEES copy-binary
      COMMAND chmod 755 ${RENAME}
