@@ -1,4 +1,4 @@
-From 9273c29ad18a1b177f943f9d1d6bd3c3c40b6322 Mon Sep 17 00:00:00 2001
+From 7e419e2c4d3159a82ce965a8f51e43cb59255dca Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -7,8 +7,8 @@ Subject: [PATCH] packages: compile lgpl libmpv
  cmake/packages_check.cmake |   6 +--
  packages/ffmpeg.cmake      | 102 +++----------------------------------
  packages/libarchive.cmake  |   3 +-
- packages/mpv.cmake         |  33 ++++--------
- 4 files changed, 18 insertions(+), 126 deletions(-)
+ packages/mpv.cmake         |  36 ++++---------
+ 4 files changed, 19 insertions(+), 128 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0154cf5 100644
@@ -176,7 +176,7 @@ index 39f0396..7902fab 100644
          -DENABLE_CPIO=OFF
          -DENABLE_CAT=OFF
 diff --git a/packages/mpv.cmake b/packages/mpv.cmake
-index a2954d5..be2d809 100644
+index a2954d5..bfe59c4 100644
 --- a/packages/mpv.cmake
 +++ b/packages/mpv.cmake
 @@ -6,15 +6,11 @@ ExternalProject_Add(mpv
@@ -195,15 +195,17 @@ index a2954d5..be2d809 100644
          mujs
          vulkan
          shaderc
-@@ -24,7 +20,6 @@ ExternalProject_Add(mpv
+@@ -22,9 +18,7 @@ ExternalProject_Add(mpv
+         spirv-cross
+         vapoursynth
          libsdl2
-         subrandr
+-        subrandr
          libsixel
 -        curl
      GIT_REPOSITORY https://github.com/mpv-player/mpv.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--filter=tree:0"
-@@ -35,30 +30,32 @@ ExternalProject_Add(mpv
+@@ -35,30 +29,32 @@ ExternalProject_Add(mpv
          --cross-file=${MESON_CROSS}
          --default-library=shared
          --prefer-static
@@ -233,7 +235,8 @@ index a2954d5..be2d809 100644
          -Dspirv-cross=enabled
          -Dvulkan=enabled
          -Dvapoursynth=enabled
-         -Dsubrandr=enabled
+-        -Dsubrandr=enabled
++        -Dsubrandr=disabled
          -Dsixel=enabled
          ${mpv_gl}
 -        -Dlibcurl=enabled
@@ -241,7 +244,7 @@ index a2954d5..be2d809 100644
          -Dc_args='-Wno-error=int-conversion'
      BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
      INSTALL_COMMAND ""
-@@ -73,13 +70,6 @@ ExternalProject_Add_Step(mpv strip-binary
+@@ -73,13 +69,6 @@ ExternalProject_Add_Step(mpv strip-binary
  
  ExternalProject_Add_Step(mpv copy-binary
      DEPENDEES strip-binary
@@ -255,7 +258,7 @@ index a2954d5..be2d809 100644
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
      COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
-@@ -99,14 +89,9 @@ mv $2 $2-git-\${GIT}")
+@@ -99,14 +88,9 @@ mv $2 $2-git-\${GIT}")
  ExternalProject_Add_Step(mpv copy-package-dir
      DEPENDEES copy-binary
      COMMAND chmod 755 ${RENAME}
