@@ -1,17 +1,17 @@
-From 60456ab64a10074f2cce8307fefce1d00d0f8c76 Mon Sep 17 00:00:00 2001
+From 478e81fba00841fbcb87636f6828697fcf75a0b5 Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
 
 ---
- cmake/packages_check.cmake |   6 +--
+ cmake/packages_check.cmake |  10 ++--
  packages/ffmpeg.cmake      | 102 +++----------------------------------
  packages/libarchive.cmake  |   3 +-
- packages/mpv.cmake         |  74 +++++++++++----------------
- 4 files changed, 40 insertions(+), 145 deletions(-)
+ packages/mpv.cmake         |  75 +++++++++++----------------
+ 4 files changed, 42 insertions(+), 148 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
-index e062242..0154cf5 100644
+index e062242..0d47a73 100644
 --- a/cmake/packages_check.cmake
 +++ b/cmake/packages_check.cmake
 @@ -7,11 +7,7 @@ if(COMPILER_TOOLCHAIN STREQUAL "gcc")
@@ -27,6 +27,24 @@ index e062242..0154cf5 100644
  elseif(COMPILER_TOOLCHAIN STREQUAL "clang")
      set(rust_target "gnullvm")
      set(vapoursynth_pkgconfig_libs "-lVapourSynth -Wl,-delayload=VapourSynth.dll")
+@@ -37,7 +33,7 @@ if(TARGET_CPU STREQUAL "x86_64")
+     set(openssl_target "mingw64")
+     set(openssl_ec_opt "enable-ec_nistp_64_gcc_128")
+     set(libvpx_target "x86_64-win64-gcc")
+-    set(mpv_gl "-Dgl=enabled -Degl-angle=enabled")
++    set(mpv_gl "-Dgl=disabled -Degl-angle=disabled")
+     set(xxhash_dispatch "-DDISPATCH=ON")
+     set(xxhash_cflags "-DXXH_X86DISPATCH_ALLOW_AVX=1")
+     set(ffmpeg_uavs3d "uavs3d")
+@@ -49,7 +45,7 @@ elseif(TARGET_CPU STREQUAL "i686")
+     set(vulkan_asm "-DUSE_MASM=OFF")
+     set(openssl_target "mingw")
+     set(libvpx_target "x86-win32-gcc")
+-    set(mpv_gl "-Dgl=enabled -Degl-angle=enabled")
++    set(mpv_gl "-Dgl=disabled -Degl-angle=disabled")
+     set(xxhash_dispatch "-DDISPATCH=ON")
+     set(xxhash_cflags "-DXXH_X86DISPATCH_ALLOW_AVX=1")
+     set(ffmpeg_uavs3d "uavs3d")
 diff --git a/packages/ffmpeg.cmake b/packages/ffmpeg.cmake
 index b9ab7a3..f477a6c 100644
 --- a/packages/ffmpeg.cmake
@@ -176,11 +194,13 @@ index 39f0396..7902fab 100644
          -DENABLE_CPIO=OFF
          -DENABLE_CAT=OFF
 diff --git a/packages/mpv.cmake b/packages/mpv.cmake
-index a2954d5..b984289 100644
+index a2954d5..6bad78b 100644
 --- a/packages/mpv.cmake
 +++ b/packages/mpv.cmake
-@@ -3,28 +3,14 @@ ExternalProject_Add(mpv
-         angle-headers
+@@ -1,30 +1,15 @@
+ ExternalProject_Add(mpv
+     DEPENDS
+-        angle-headers
          ffmpeg
          fribidi
 -        lcms2
@@ -208,7 +228,7 @@ index a2954d5..b984289 100644
      GIT_REPOSITORY https://github.com/mpv-player/mpv.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--filter=tree:0"
-@@ -35,31 +21,45 @@ ExternalProject_Add(mpv
+@@ -35,31 +20,45 @@ ExternalProject_Add(mpv
          --cross-file=${MESON_CROSS}
          --default-library=shared
          --prefer-static
@@ -269,7 +289,7 @@ index a2954d5..b984289 100644
      BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
      INSTALL_COMMAND ""
      LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-@@ -73,13 +73,6 @@ ExternalProject_Add_Step(mpv strip-binary
+@@ -73,13 +72,6 @@ ExternalProject_Add_Step(mpv strip-binary
  
  ExternalProject_Add_Step(mpv copy-binary
      DEPENDEES strip-binary
@@ -283,7 +303,7 @@ index a2954d5..b984289 100644
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
      COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
-@@ -99,14 +92,9 @@ mv $2 $2-git-\${GIT}")
+@@ -99,14 +91,9 @@ mv $2 $2-git-\${GIT}")
  ExternalProject_Add_Step(mpv copy-package-dir
      DEPENDEES copy-binary
      COMMAND chmod 755 ${RENAME}
