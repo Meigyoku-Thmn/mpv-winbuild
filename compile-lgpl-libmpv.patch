@@ -1,4 +1,4 @@
-From 7f9f561bfb61912f02020329aa4232234dd57fc9 Mon Sep 17 00:00:00 2001
+From 719bbba006c2cfad15b2b57096977b3515dd2826 Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -9,9 +9,9 @@ Subject: [PATCH] packages: compile lgpl libmpv
  packages/freetype2.cmake   |   3 +-
  packages/libarchive.cmake  |   3 +-
  packages/libass.cmake      |   3 +-
- packages/libplacebo.cmake  |   4 +-
+ packages/libplacebo.cmake  |   5 +-
  packages/mpv.cmake         |  80 ++++++++++++-----------------
- 7 files changed, 48 insertions(+), 157 deletions(-)
+ 7 files changed, 49 insertions(+), 157 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0d47a73 100644
@@ -238,18 +238,19 @@ index ed27477..7f03f84 100644
          -Dasm=enabled
          -Dlibunibreak=enabled
 diff --git a/packages/libplacebo.cmake b/packages/libplacebo.cmake
-index b5797dc..b09e1ac 100644
+index b5797dc..4121bf3 100644
 --- a/packages/libplacebo.cmake
 +++ b/packages/libplacebo.cmake
-@@ -2,7 +2,6 @@ get_property(src_glad TARGET glad PROPERTY _EP_SOURCE_DIR)
+@@ -2,7 +2,7 @@ get_property(src_glad TARGET glad PROPERTY _EP_SOURCE_DIR)
  get_property(src_fast_float TARGET fast_float PROPERTY _EP_SOURCE_DIR)
  ExternalProject_Add(libplacebo
      DEPENDS
 -        vulkan
++        vulkan-header
          shaderc
          spirv-cross
          lcms2
-@@ -25,10 +24,11 @@ ExternalProject_Add(libplacebo
+@@ -25,10 +25,11 @@ ExternalProject_Add(libplacebo
          --cross-file=${MESON_CROSS}
          --default-library=static
          -Dd3d11=enabled
