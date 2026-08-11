@@ -1,17 +1,17 @@
-From 3e57b6035e35cf367fd2effc0f7007290f5818a2 Mon Sep 17 00:00:00 2001
-From: test <test@test.com>
+From 586d786707de98a2e62a2ffbc7a954c8227e0e9f Mon Sep 17 00:00:00 2001
+From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Tue, 11 Aug 2026 14:54:41 +0700
 Subject: [PATCH] packages: compile lgpl libmpv
 
 ---
  cmake/packages_check.cmake |  10 ++--
- packages/ffmpeg.cmake      | 102 +++----------------------------------
+ packages/ffmpeg.cmake      | 103 +++----------------------------------
  packages/freetype2.cmake   |   3 +-
  packages/libarchive.cmake  |   3 +-
  packages/libass.cmake      |   3 +-
  packages/libplacebo.cmake  |   5 +-
  packages/mpv.cmake         |  79 ++++++++++++----------------
- 7 files changed, 48 insertions(+), 157 deletions(-)
+ 7 files changed, 49 insertions(+), 157 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0d47a73 100644
@@ -49,7 +49,7 @@ index e062242..0d47a73 100644
      set(xxhash_cflags "-DXXH_X86DISPATCH_ALLOW_AVX=1")
      set(ffmpeg_uavs3d "uavs3d")
 diff --git a/packages/ffmpeg.cmake b/packages/ffmpeg.cmake
-index b9ab7a3..f477a6c 100644
+index b9ab7a3..40db3d4 100644
 --- a/packages/ffmpeg.cmake
 +++ b/packages/ffmpeg.cmake
 @@ -1,49 +1,5 @@
@@ -102,7 +102,7 @@ index b9ab7a3..f477a6c 100644
      GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--sparse --filter=tree:0"
-@@ -57,65 +13,21 @@ ExternalProject_Add(ffmpeg
+@@ -57,65 +13,22 @@ ExternalProject_Add(ffmpeg
          --pkg-config-flags=--static
          --enable-cross-compile
          --enable-runtime-cpudetect
@@ -161,6 +161,7 @@ index b9ab7a3..f477a6c 100644
 +        --enable-parser=vorbis
 +        --enable-protocol=file
 +        --enable-filter=buffer,buffersink,abuffer,abuffersink,scale,format,aformat,aresample,null,anull
++        --disable-network
          --disable-doc
          --disable-ffplay
          --disable-ffprobe
