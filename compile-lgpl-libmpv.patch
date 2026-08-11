@@ -1,4 +1,4 @@
-From 719bbba006c2cfad15b2b57096977b3515dd2826 Mon Sep 17 00:00:00 2001
+From 358b29568671cb2c67717226f18660dc077c7301 Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -10,8 +10,8 @@ Subject: [PATCH] packages: compile lgpl libmpv
  packages/libarchive.cmake  |   3 +-
  packages/libass.cmake      |   3 +-
  packages/libplacebo.cmake  |   5 +-
- packages/mpv.cmake         |  80 ++++++++++++-----------------
- 7 files changed, 49 insertions(+), 157 deletions(-)
+ packages/mpv.cmake         |  79 ++++++++++++----------------
+ 7 files changed, 48 insertions(+), 157 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0d47a73 100644
@@ -264,7 +264,7 @@ index b5797dc..4121bf3 100644
      BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
      INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
 diff --git a/packages/mpv.cmake b/packages/mpv.cmake
-index a2954d5..7776146 100644
+index a2954d5..82dc0e7 100644
 --- a/packages/mpv.cmake
 +++ b/packages/mpv.cmake
 @@ -1,30 +1,13 @@
@@ -298,7 +298,7 @@ index a2954d5..7776146 100644
      GIT_REPOSITORY https://github.com/mpv-player/mpv.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--filter=tree:0"
-@@ -35,31 +18,46 @@ ExternalProject_Add(mpv
+@@ -35,31 +18,45 @@ ExternalProject_Add(mpv
          --cross-file=${MESON_CROSS}
          --default-library=shared
          --prefer-static
@@ -343,7 +343,6 @@ index a2954d5..7776146 100644
 +        -Dsubrandr=disabled
 +        -Dsixel=disabled
 +        -Djpeg=disabled
-+        -Dpng=disabled
 +        -Dcplugins=disabled
 +        -Dwin32-smtc=disabled
 +        -Dd3d-hwaccel=disabled
@@ -361,7 +360,7 @@ index a2954d5..7776146 100644
      BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
      INSTALL_COMMAND ""
      LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-@@ -73,13 +71,6 @@ ExternalProject_Add_Step(mpv strip-binary
+@@ -73,13 +70,6 @@ ExternalProject_Add_Step(mpv strip-binary
  
  ExternalProject_Add_Step(mpv copy-binary
      DEPENDEES strip-binary
@@ -375,7 +374,7 @@ index a2954d5..7776146 100644
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
      COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
-@@ -99,14 +90,9 @@ mv $2 $2-git-\${GIT}")
+@@ -99,14 +89,9 @@ mv $2 $2-git-\${GIT}")
  ExternalProject_Add_Step(mpv copy-package-dir
      DEPENDEES copy-binary
      COMMAND chmod 755 ${RENAME}
