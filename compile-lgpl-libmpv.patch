@@ -1,4 +1,4 @@
-From 358b29568671cb2c67717226f18660dc077c7301 Mon Sep 17 00:00:00 2001
+From bcb687358aefd60cb35abd7ba219840b9cb84e8b Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -11,7 +11,8 @@ Subject: [PATCH] packages: compile lgpl libmpv
  packages/libass.cmake      |   3 +-
  packages/libplacebo.cmake  |   5 +-
  packages/mpv.cmake         |  79 ++++++++++++----------------
- 7 files changed, 48 insertions(+), 157 deletions(-)
+ packages/spirv-cross.cmake |   3 ++
+ 8 files changed, 51 insertions(+), 157 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0d47a73 100644
@@ -391,6 +392,20 @@ index a2954d5..82dc0e7 100644
      COMMENT "Moving mpv package folder"
      LOG 1
  )
+diff --git a/packages/spirv-cross.cmake b/packages/spirv-cross.cmake
+index d49b9d3..722170c 100644
+--- a/packages/spirv-cross.cmake
++++ b/packages/spirv-cross.cmake
+@@ -16,6 +16,9 @@ ExternalProject_Add(spirv-cross
+         -DSPIRV_CROSS_SHARED=ON
+         -DSPIRV_CROSS_CLI=OFF
+         -DSPIRV_CROSS_ENABLE_TESTS=OFF
++        -DSPIRV_CROSS_ENABLE_MSL=OFF
++        -DSPIRV_CROSS_ENABLE_CPP=OFF
++        -DSPIRV_CROSS_ENABLE_REFLECT=OFF
+         -DCMAKE_CXX_FLAGS='${CMAKE_CXX_FLAGS} -D__USE_MINGW_ANSI_STDIO'
+     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
+     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
 -- 
 2.55.0.windows.3
 
