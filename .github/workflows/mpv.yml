@@ -108,9 +108,6 @@ jobs:
             if ("${{ inputs.lgpl}}" == "true") {
               matrix.lgpl.push(true)
             }
-            if (matrix.bit.includes("32") && matrix.lgpl.includes(false)) {
-              matrix.exclude = [{bit: "32", lgpl: false}];
-            }
             core.setOutput("matrix",JSON.stringify(matrix));
 
             const fs = require('fs/promises');
