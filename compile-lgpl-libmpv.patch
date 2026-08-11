@@ -1,4 +1,4 @@
-From d37718de4d46015e8452fb0ab26ae5323f4ee2fe Mon Sep 17 00:00:00 2001
+From 60456ab64a10074f2cce8307fefce1d00d0f8c76 Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Thu, 14 May 2026 21:55:52 +0800
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -7,8 +7,8 @@ Subject: [PATCH] packages: compile lgpl libmpv
  cmake/packages_check.cmake |   6 +--
  packages/ffmpeg.cmake      | 102 +++----------------------------------
  packages/libarchive.cmake  |   3 +-
- packages/mpv.cmake         |  59 +++++++--------------
- 4 files changed, 27 insertions(+), 143 deletions(-)
+ packages/mpv.cmake         |  74 +++++++++++----------------
+ 4 files changed, 40 insertions(+), 145 deletions(-)
 
 diff --git a/cmake/packages_check.cmake b/cmake/packages_check.cmake
 index e062242..0154cf5 100644
@@ -176,10 +176,10 @@ index 39f0396..7902fab 100644
          -DENABLE_CPIO=OFF
          -DENABLE_CAT=OFF
 diff --git a/packages/mpv.cmake b/packages/mpv.cmake
-index a2954d5..9006f84 100644
+index a2954d5..b984289 100644
 --- a/packages/mpv.cmake
 +++ b/packages/mpv.cmake
-@@ -3,28 +3,15 @@ ExternalProject_Add(mpv
+@@ -3,28 +3,14 @@ ExternalProject_Add(mpv
          angle-headers
          ffmpeg
          fribidi
@@ -189,7 +189,7 @@ index a2954d5..9006f84 100644
 -        libdvdnav
 -        libdvdread
          libiconv
-         libjpeg
+-        libjpeg
          libpng
 -        luajit
 -        rubberband
@@ -208,7 +208,7 @@ index a2954d5..9006f84 100644
      GIT_REPOSITORY https://github.com/mpv-player/mpv.git
      SOURCE_DIR ${SOURCE_LOCATION}
      GIT_CLONE_FLAGS "--filter=tree:0"
-@@ -35,30 +22,32 @@ ExternalProject_Add(mpv
+@@ -35,31 +21,45 @@ ExternalProject_Add(mpv
          --cross-file=${MESON_CROSS}
          --default-library=shared
          --prefer-static
@@ -228,6 +228,8 @@ index a2954d5..9006f84 100644
 -        -Dlibbluray=enabled
 -        -Ddvdnav=enabled
 +        -Dpdf-build=disabled
++        -Dhtml-build=disabled
++        -Dmanpage-build=disabled
 +        -Dlua=disabled
 +        -Djavascript=disabled
 +        -Dsdl2-gamepad=disabled
@@ -249,13 +251,25 @@ index a2954d5..9006f84 100644
 +        -Dvapoursynth=disabled
 +        -Dsubrandr=disabled
 +        -Dsixel=disabled
++        -Djpeg=disabled
++        -Dcplugins=disabled
++        -Dwin32-smtc=disabled
++        -Dd3d-hwaccel=disabled
++        -Dd3d9-hwaccel=disabled
++        -Dcuda-hwaccel=disabled
++        -Dcuda-interop=disabled
++        -Dgl-dxinterop=disabled
++        -Dgl-dxinterop-d3d9=disabled
          ${mpv_gl}
 -        -Dlibcurl=enabled
+-        -Dc_args='-Wno-error=int-conversion'
 +        -Dlibcurl=disabled
-         -Dc_args='-Wno-error=int-conversion'
++        -Dc_args='-Wno-error=int-conversion -ffunction-sections -fdata-sections'
++        -Dc_link_args='-Wl,--gc-sections'
      BUILD_COMMAND ${EXEC} LTO_JOB=1 PDB=1 ninja -C <BINARY_DIR>
      INSTALL_COMMAND ""
-@@ -73,13 +62,6 @@ ExternalProject_Add_Step(mpv strip-binary
+     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+@@ -73,13 +73,6 @@ ExternalProject_Add_Step(mpv strip-binary
  
  ExternalProject_Add_Step(mpv copy-binary
      DEPENDEES strip-binary
@@ -269,7 +283,7 @@ index a2954d5..9006f84 100644
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
      COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
      COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/include/mpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
-@@ -99,14 +81,9 @@ mv $2 $2-git-\${GIT}")
+@@ -99,14 +92,9 @@ mv $2 $2-git-\${GIT}")
  ExternalProject_Add_Step(mpv copy-package-dir
      DEPENDEES copy-binary
      COMMAND chmod 755 ${RENAME}
