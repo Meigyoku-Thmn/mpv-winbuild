@@ -171,6 +171,7 @@ jobs:
   build_mpv:
     name: Build MPV
     needs: params
+    if: ${{ !(matrix.bit == '32' && matrix.lgpl != true) }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/archlinux/archlinux:base-devel
