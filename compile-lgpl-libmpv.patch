@@ -1,4 +1,4 @@
-From 89b80ea3de1f1450ad9893ffff166e74679a7237 Mon Sep 17 00:00:00 2001
+From 070d21058441a5aea7a18f70c7552b96c1e5fecb Mon Sep 17 00:00:00 2001
 From: zhongfly <11155705+zhongfly@users.noreply.github.com>
 Date: Tue, 11 Aug 2026 14:54:41 +0700
 Subject: [PATCH] packages: compile lgpl libmpv
@@ -48,7 +48,7 @@ index e062242..0d47a73 100644
      set(xxhash_cflags "-DXXH_X86DISPATCH_ALLOW_AVX=1")
      set(ffmpeg_uavs3d "uavs3d")
 diff --git a/packages/ffmpeg.cmake b/packages/ffmpeg.cmake
-index b9ab7a3..40db3d4 100644
+index b9ab7a3..d0864b9 100644
 --- a/packages/ffmpeg.cmake
 +++ b/packages/ffmpeg.cmake
 @@ -1,49 +1,5 @@
@@ -155,8 +155,8 @@ index b9ab7a3..40db3d4 100644
 -        --enable-openal
 -        --enable-opengl
 +        --disable-everything
-+        --enable-decoder=theora,vorbis
-+        --enable-demuxer=ogg
++        --enable-decoder=theora,vorbis,ass,ssa,srt,webvtt
++        --enable-demuxer=ogg,ass,srt,webvtt
 +        --enable-parser=vorbis
 +        --enable-protocol=file
 +        --enable-filter=buffer,buffersink,abuffer,abuffersink,scale,format,aformat,aresample,null,anull
